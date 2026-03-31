@@ -9,7 +9,6 @@ the original viewpoint.
 """
 import sys
 import torch
-import numpy as np
 from copy import deepcopy
 from PIL import Image as PILImage
 
@@ -81,6 +80,11 @@ gs.from_rotation(
 adjusted_scale = gs.get_scaling * scale
 gs.from_scaling(adjusted_scale)
 gs.mininum_kernel_size *= scale[0, 0].item()
+
+# Save the posed gaussian – this .ply is in camera space, so 3D viewers
+# will show it from roughly the original perspective.
+gs.save_ply("splat_original_view.ply")
+print("Saved posed gaussian to splat_original_view.ply")
 
 # ── 6. Set up camera for original-viewpoint rendering ─────────────────────────
 # After the l2c transform the gaussian lives in the camera's coordinate system,
