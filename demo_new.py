@@ -81,8 +81,7 @@ adjusted_scale = gs.get_scaling * scale
 gs.from_scaling(adjusted_scale)
 gs.mininum_kernel_size *= scale[0, 0].item()
 
-# Save the posed gaussian – this .ply is in camera space, so 3D viewers
-# will show it from roughly the original perspective.
+# Save the posed gaussian (in PyTorch3D camera space)
 gs.save_ply("splat_original_view.ply")
 print("Saved posed gaussian to splat_original_view.ply")
 
