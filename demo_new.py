@@ -76,10 +76,15 @@ gs.from_rotation(
     quaternion_multiply(quaternion_invert(rotation), gs.get_rotation)
 )
 
-# Scales
+# Scales – must update mininum_kernel_size BEFORE from_scaling so the
+# internal round-trip (from_scaling → get_scaling) stays consistent.
 adjusted_scale = gs.get_scaling * scale
-gs.from_scaling(adjusted_scale)
 gs.mininum_kernel_size *= scale[0, 0].item()
+adjusted_scale = torch.maximum(
+    adjusted_scale,
+    torch.tensor(gs.mininum_kernel_size * 1.1, device=adjusted_scale.device),
+)
+gs.from_scaling(adjusted_scale)
 
 # Save the posed gaussian (in PyTorch3D camera space)
 gs.save_ply("splat_original_view.ply")

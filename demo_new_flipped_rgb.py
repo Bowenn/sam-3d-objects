@@ -72,8 +72,13 @@ gs.from_xyz(points_cam)
 gs.from_rotation(
     quaternion_multiply(quaternion_invert(rotation), gs.get_rotation)
 )
-gs.from_scaling(gs.get_scaling * scale)
+adjusted_scale = gs.get_scaling * scale
 gs.mininum_kernel_size *= scale[0, 0].item()
+adjusted_scale = torch.maximum(
+    adjusted_scale,
+    torch.tensor(gs.mininum_kernel_size * 1.1, device=adjusted_scale.device),
+)
+gs.from_scaling(adjusted_scale)
 
 # ── 5. Flip for PLY viewers (180° around Y) ───────────────────────────────────
 flip = torch.tensor([-1.0, 1.0, -1.0], device="cuda")

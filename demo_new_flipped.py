@@ -52,8 +52,12 @@ gs.from_rotation(
     quaternion_multiply(quaternion_invert(rotation), gs.get_rotation)
 )
 adjusted_scale = gs.get_scaling * scale
-gs.from_scaling(adjusted_scale)
 gs.mininum_kernel_size *= scale[0, 0].item()
+adjusted_scale = torch.maximum(
+    adjusted_scale,
+    torch.tensor(gs.mininum_kernel_size * 1.1, device=adjusted_scale.device),
+)
+gs.from_scaling(adjusted_scale)
 
 # ── 6. Flip for PLY viewers ───────────────────────────────────────────────────
 # 180° rotation around Y axis: negate X and Z so the default -Z view matches
