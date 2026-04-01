@@ -25,7 +25,8 @@ def save_ply_rgb(gs, path):
     xyz = gs.get_xyz.detach().cpu().numpy()
 
     # Convert SH DC coefficients → linear RGB [0, 1] → uint8
-    f_dc = gs._features_dc.detach().squeeze(-1).cpu()  # (N, 3)
+    # _features_dc can be (N, 1, 3) or (N, 3, 1) depending on the decoder
+    f_dc = gs._features_dc.detach().reshape(-1, 3).cpu()  # (N, 3)
     rgb = (f_dc * C0 + 0.5).clamp(0, 1)
     rgb = (rgb * 255).to(torch.uint8).numpy()
 
